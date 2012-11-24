@@ -32,9 +32,8 @@ namespace LWSlideViewController
 		#endregion
 
 		#region INIT
-		public LWSlideViewController (UIViewController initVC, UITableViewSource tblSource)
+		public LWSlideViewController (UIViewController initVC)
 		{
-			tableSource = tblSource;
 			initViewController = initVC;
 			rotationEnabled = true;
 			slideMode = LWSlideViewControllerMode.AllViewController | LWSlideViewControllerMode.WholeView;
@@ -48,6 +47,8 @@ namespace LWSlideViewController
 			tableView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 			tableView.BackgroundColor = UIColor.FromRGBA(50f/255f,57f/255f,74f/255f,1f);
 			tableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+			TestTableSource tableSource = new TestTableSource();
+			tableSource.RowSelectedEvent += HandleRowSelectedEvent;
 			tableView.Source = tableSource;
 			View.AddSubview(tableView);
 
@@ -76,6 +77,11 @@ namespace LWSlideViewController
 			slideInTapGestureRecognizer = new UITapGestureRecognizer(HandleSlideInTap);
 			slideInTapGestureRecognizer.Enabled = false;
 			slideNavigationController.View.AddGestureRecognizer(slideInTapGestureRecognizer);
+		}
+
+		void HandleRowSelectedEvent (string name)
+		{
+			ShowViewController(new TestViewController(name));
 		}
 
 		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)

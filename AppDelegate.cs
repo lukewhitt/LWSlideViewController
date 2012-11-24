@@ -29,7 +29,7 @@ namespace LWSlideViewController
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 			
 			// If you have defined a view, add it here:
-			window.RootViewController =  new LWSlideViewController(new TestViewController(), new TestTableSource());
+			window.RootViewController =  new LWSlideViewController(new TestViewController(null));
 				
 			// make the window visible
 			window.MakeKeyAndVisible ();

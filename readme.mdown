@@ -8,14 +8,16 @@ In it's current state, it supports the UITableView behind the sliding view but d
 Use
 =====
 
-Constructor takes in two values:
+Constructor takes in one value:
 
 `UIViewController initialViewController` - this will be the root view controller of the navigation controller.
-`UITableViewSource tableViewSource` - this is the UITableViewSource for the UITableView hidden by the sliding view. Done this way so it is simply plug and play.
+
 
 Only two files are required:
 * LWSlideViewController
 * LWSlideViewControllerDefines
+
+But the way it is currently written, you'll need to specify a `UITableViewSource` in a separate file.
 
 [![](http://i.imgur.com/FIZKJ.png)]
 

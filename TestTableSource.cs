@@ -12,6 +12,8 @@ namespace LWSlideViewController
 		private List<string> MenuOptions = new List<string>(5){"Spiderman","Batman","Superman","Deadpool", "Jimmy Dizzle"};
 		private List<string> ImageNames = new List<string>(5){"Images/spiderman.jpeg","Images/batman.jpeg","Images/superman.jpeg","Images/deadpool.jpeg","Images/doos.png"};
 		private NSString kCellID = new NSString("tableCell");
+		public delegate void RowSelectedDelegate(string name);
+		public event RowSelectedDelegate RowSelectedEvent;
 
 		public TestTableSource ()
 		{
@@ -82,6 +84,13 @@ namespace LWSlideViewController
 			cell.TextLabel.Text = MenuOptions[indexPath.Row];
 
 			return cell;
+		}
+
+		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
+		{
+			if (RowSelectedEvent != null)
+				RowSelectedEvent(MenuOptions[indexPath.Row]);
+			
 		}
 	}
 }
