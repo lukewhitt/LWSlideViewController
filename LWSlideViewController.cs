@@ -23,7 +23,6 @@ namespace LWSlideViewController
 		private UITableView tableView;
 		private PointF startingDragPoint;
 		private float startingDragTransformTx;
-		private UITapGestureRecognizer tableViewTapGestureRecogniser;
 		private UITapGestureRecognizer slideInTapGestureRecognizer;
 		private LWSlideViewControllerState slideState;
 		private LWSlideViewControllerMode slideMode;
@@ -82,6 +81,19 @@ namespace LWSlideViewController
 		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)
 		{
 			slideState = state;
+		}
+
+		public override bool ShouldAutorotate ()
+		{
+			return true;
+		}
+
+		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations ()
+		{
+			if (rotationEnabled)
+				return UIInterfaceOrientationMask.All;
+			else
+				return UIInterfaceOrientationMask.Portrait;
 		}
 		#endregion
 

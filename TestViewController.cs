@@ -16,6 +16,16 @@ namespace LWSlideViewController
 			base.ViewDidLoad ();
 			View.BackgroundColor = UIColor.Red;
 		}
+
+		public override bool ShouldAutorotate ()
+		{
+			return true;
+		}
+
+		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations ()
+		{
+			return UIInterfaceOrientationMask.All;
+		}
 	}
 }
 

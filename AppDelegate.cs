@@ -15,7 +15,6 @@ namespace LWSlideViewController
 	{
 		// class-level declarations
 		UIWindow window;
-		UINavigationController navigationController;
 
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
@@ -30,10 +29,8 @@ namespace LWSlideViewController
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 			
 			// If you have defined a view, add it here:
-			navigationController = new UINavigationController(new LWSlideViewController(new TestViewController(), new TestTableSource()));
-			navigationController.SetNavigationBarHidden(true, false);
-			window.AddSubview (navigationController.View);
-			
+			window.RootViewController =  new LWSlideViewController(new TestViewController(), new TestTableSource());
+				
 			// make the window visible
 			window.MakeKeyAndVisible ();
 			
