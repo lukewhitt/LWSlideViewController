@@ -53,7 +53,6 @@ namespace LWSlideViewController
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			/* TODO Search Functionality
 			searchBarBackgroundView = new UIImageView(new RectangleF(0,0,320,44));
 			searchBarBackgroundView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
 			View.AddSubview(searchBarBackgroundView);
@@ -62,9 +61,9 @@ namespace LWSlideViewController
 			//searchBar.Delegate = TODO;
 			searchBar.TintColor = UIColor.FromRGBA(36f,43f,57f,1f);
 			View.AddSubview(searchBar);
-			*/
 
-			tableView = new UITableView(new RectangleF(0,0,320, View.Bounds.Size.Height), UITableViewStyle.Plain);
+
+			tableView = new UITableView(new RectangleF(0,0,320, View.Bounds.Size.Height-44f), UITableViewStyle.Plain);
 			tableView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 			tableView.BackgroundColor = UIColor.FromRGBA(50f/255f,57f/255f,74f/255f,1f);
 			tableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -74,6 +73,9 @@ namespace LWSlideViewController
 			ConfigureViewController(initViewController);
 
 			slideNavigationController = new UINavigationController(initViewController);
+			LWSlideNavigationControllerDelegate navDelegate = new LWSlideNavigationControllerDelegate();
+			navDelegate.DidShowViewControllerEvent += HandleDidShowViewControllerEvent;
+			slideNavigationController.Delegate = navDelegate;
 			slideNavigationController.View.Layer.ShadowColor = UIColor.Black.CGColor;
 			slideNavigationController.View.Layer.ShadowOffset = new SizeF(0,0);
 			slideNavigationController.View.Layer.ShadowRadius = 4;
@@ -98,22 +100,27 @@ namespace LWSlideViewController
 			tableViewTapGestureRecogniser.Enabled = false;
 			tableView.AddGestureRecognizer(tableViewTapGestureRecogniser);
 
-			/*
+
 			UIImage searchBarBG = UIImage.FromFile("Images/search_bar_background.png");
 			searchBar.BackgroundImage = searchBarBG;
 			searchBar.BackgroundImage.StretchableImage(0,0);
 			searchBarBackgroundView.Image = searchBarBG;
 			searchBarBackgroundView.Image.StretchableImage(0,0);
 			searchBar.Placeholder = "Search";
-			*/
 
+
+		}
+
+		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)
+		{
+			slideState = state;
 		}
 		#endregion
 
 		#region GESTURE HANDLERS
 		private void HandleTableViewTap(UITapGestureRecognizer rec)
 		{
-			//searchBar.ResignFirstResponder();
+			searchBar.ResignFirstResponder();
 		}
 
 		private void HandleSlideInTap(UITapGestureRecognizer rec)
@@ -275,7 +282,7 @@ namespace LWSlideViewController
 			               delegate{
 				slideNavigationController.View.Transform = CGAffineTransform.MakeTranslation(kLWRightAnchorX, 0f);
 			}, delegate {
-				//searchBar.Frame = new RectangleF(0,0,kLWRightAnchorX, searchBar.Frame.Size.Height);
+				searchBar.Frame = new RectangleF(0,0,kLWRightAnchorX, searchBar.Frame.Size.Height);
 				slideInTapGestureRecognizer.Enabled = true;
 			});
 		}
@@ -294,11 +301,31 @@ namespace LWSlideViewController
 			UIView.Animate(kLWSlideAnimationDuration, 0, UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.BeginFromCurrentState,
 			               delegate {
 				slideNavigationController.View.Transform = CGAffineTransform.MakeTranslation(width, 0);
-				//searchBar.Frame = new RectangleF(0,0,width,searchBar.Frame.Size.Height);
+				searchBar.Frame = new RectangleF(0,0,width,searchBar.Frame.Size.Height);
 			}, delegate {});
 		}
-
 		#endregion
+	}
+
+	public class LWSlideNavigationControllerDelegate : MonoTouch.UIKit.UINavigationControllerDelegate
+	{
+		public delegate void DidShowViewControllerDelegate(LWSlideViewControllerState state);
+		public event DidShowViewControllerDelegate DidShowViewControllerEvent;
+
+		public LWSlideNavigationControllerDelegate()
+		{}
+
+		public override void DidShowViewController (UINavigationController navigationController, UIViewController viewController, bool animated)
+		{
+			if (navigationController.ViewControllers.Length > 1) 
+			{
+				if (DidShowViewControllerEvent != null)
+					DidShowViewControllerEvent(LWSlideViewControllerState.DrilledDown);
+			}
+			else
+				if (DidShowViewControllerEvent != null)
+					DidShowViewControllerEvent(LWSlideViewControllerState.Normal);
+		}
 	}
 }
 

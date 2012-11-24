@@ -2,7 +2,7 @@ using System;
 
 namespace LWSlideViewController
 {
-	enum LWSlideViewControllerState {
+	public enum LWSlideViewControllerState {
 		Normal = 0,
 		Dragging,
 		Peeking,
@@ -10,7 +10,7 @@ namespace LWSlideViewController
 		Searching
 	}
 
-	enum LWSlideViewControllerMode {
+	public enum LWSlideViewControllerMode {
 		NavigationBarOnly = 1,
 		WholeView = 2,
 		ControllerOnly = 3,
