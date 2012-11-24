@@ -18,7 +18,6 @@ namespace LWSlideViewController
 		#endregion
 
 		#region PROPERTIES
-		// Properties
 		private UINavigationController slideNavigationController;
 		private UITableView tableView;
 		private PointF startingDragPoint;
@@ -27,7 +26,6 @@ namespace LWSlideViewController
 		private LWSlideViewControllerState slideState;
 		private LWSlideViewControllerMode slideMode;
 		private UIViewController initViewController;
-		private UITableViewSource tableSource;
 		private bool rotationEnabled;
 		#endregion
 
@@ -79,16 +77,6 @@ namespace LWSlideViewController
 			slideNavigationController.View.AddGestureRecognizer(slideInTapGestureRecognizer);
 		}
 
-		void HandleRowSelectedEvent (string name)
-		{
-			ShowViewController(new TestViewController(name));
-		}
-
-		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)
-		{
-			slideState = state;
-		}
-
 		public override bool ShouldAutorotate ()
 		{
 			return true;
@@ -103,6 +91,18 @@ namespace LWSlideViewController
 		}
 		#endregion
 
+		#region EVENT HANDLERS
+		void HandleRowSelectedEvent (string name)
+		{
+			ShowViewController(new TestViewController(name));
+		}
+		
+		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)
+		{
+			slideState = state;
+		}
+		#endregion 
+		 
 		#region GESTURE HANDLERS
 		private void HandleSlideInTap(UITapGestureRecognizer rec)
 		{
@@ -234,7 +234,9 @@ namespace LWSlideViewController
 				SlideOutSlideNavigationView();
 			}
 		}
-
+		#endregion
+		
+		#region ANIMATIONS
 		private void SlideInSlideNavigationView()
 		{
 			UIView.Animate(kLWSlideAnimationDuration, 0, UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.BeginFromCurrentState,
@@ -246,9 +248,6 @@ namespace LWSlideViewController
 				slideState = LWSlideViewControllerState.Normal;
 			});
 		}
-		#endregion
-
-		#region ANIMATIONS
 
 		private void SlideOutSlideNavigationView()
 		{
