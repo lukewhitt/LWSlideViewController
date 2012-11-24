@@ -3,8 +3,7 @@ LWSlideViewController
 
 This is a Monotouch adaptation of the [MTSlideViewController by myyell0w]. It is a direct port (copied line for line) so all credit goes to myyell0w - I simply changed the syntax to C#!
 
-In it's current state, it supports the UITableView behind the sliding view but doesn't
-include the Search functionality found in the Objective-C version. This was because I couldn't find an elegant way to handle the search functionality (at least in the time limit I had to port this! - I will include it in a future update).
+In it's current state, it supports the UITableView behind the sliding view but doesn't include the Search functionality found in the Objective-C version. 
 
 Use
 =====

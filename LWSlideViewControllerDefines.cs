@@ -7,7 +7,6 @@ namespace LWSlideViewController
 		Dragging,
 		Peeking,
 		DrilledDown,
-		Searching
 	}
 
 	public enum LWSlideViewControllerMode {

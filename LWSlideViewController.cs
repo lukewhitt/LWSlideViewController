@@ -10,13 +10,6 @@ namespace LWSlideViewController
 	public class LWSlideViewController : UIViewController
 	{
 		#region CONSTANTS
-		private const string kLWSlideViewControllerSectionTitleKey = "kLWSlideViewControllerSectionTitleKey";
-		private const string kLWSlideViewControllerSectionTitleNoTitle = "kLWSlideViewControllerSectionTitleNoTitle";
-		private const string kLWSlideViewControllerSectionViewControllersKey = "kLWSlideViewControllerSectionViewControllersKey";
-		private const string kLWSlideViewControllerViewControllerTitleKey = "kLWSlideViewControllerViewControllerTitleKey";
-		private const string kLWSlideViewControllerViewControllerIconKey = "kLWSlideViewControllerViewControllerIconKey";
-		private const string kLWSlideViewControllerViewControllerKey = "kLWSlideViewControllerViewControllerKey";
-
 		private const float kLWLeftSlideDecisionPointX = 100f;
 		private const float kLWRightSlideDecisionPointX = 265f;
 		private const float kLWRightAnchorX = 270f;
@@ -28,8 +21,6 @@ namespace LWSlideViewController
 		// Properties
 		private UINavigationController slideNavigationController;
 		private UITableView tableView;
-		private UISearchBar searchBar;
-		private UIImageView searchBarBackgroundView;
 		private PointF startingDragPoint;
 		private float startingDragTransformTx;
 		private UITapGestureRecognizer tableViewTapGestureRecogniser;
@@ -38,6 +29,7 @@ namespace LWSlideViewController
 		private LWSlideViewControllerMode slideMode;
 		private UIViewController initViewController;
 		private UITableViewSource tableSource;
+		private bool rotationEnabled;
 		#endregion
 
 		#region INIT
@@ -45,7 +37,7 @@ namespace LWSlideViewController
 		{
 			tableSource = tblSource;
 			initViewController = initVC;
-			//rotationEnabled = true;
+			rotationEnabled = true;
 			slideMode = LWSlideViewControllerMode.AllViewController | LWSlideViewControllerMode.WholeView;
 			slideState = LWSlideViewControllerState.Normal;
 		}
@@ -53,17 +45,7 @@ namespace LWSlideViewController
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			searchBarBackgroundView = new UIImageView(new RectangleF(0,0,320,44));
-			searchBarBackgroundView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			View.AddSubview(searchBarBackgroundView);
-
-			searchBar = new UISearchBar(new RectangleF(0,0,kLWRightAnchorX,44));
-			//searchBar.Delegate = TODO;
-			searchBar.TintColor = UIColor.FromRGBA(36f,43f,57f,1f);
-			View.AddSubview(searchBar);
-
-
-			tableView = new UITableView(new RectangleF(0,0,320, View.Bounds.Size.Height-44f), UITableViewStyle.Plain);
+			tableView = new UITableView(new RectangleF(0,0,320, View.Bounds.Size.Height), UITableViewStyle.Plain);
 			tableView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 			tableView.BackgroundColor = UIColor.FromRGBA(50f/255f,57f/255f,74f/255f,1f);
 			tableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -95,20 +77,6 @@ namespace LWSlideViewController
 			slideInTapGestureRecognizer = new UITapGestureRecognizer(HandleSlideInTap);
 			slideInTapGestureRecognizer.Enabled = false;
 			slideNavigationController.View.AddGestureRecognizer(slideInTapGestureRecognizer);
-
-			tableViewTapGestureRecogniser = new UITapGestureRecognizer(HandleTableViewTap);
-			tableViewTapGestureRecogniser.Enabled = false;
-			tableView.AddGestureRecognizer(tableViewTapGestureRecogniser);
-
-
-			UIImage searchBarBG = UIImage.FromFile("Images/search_bar_background.png");
-			searchBar.BackgroundImage = searchBarBG;
-			searchBar.BackgroundImage.StretchableImage(0,0);
-			searchBarBackgroundView.Image = searchBarBG;
-			searchBarBackgroundView.Image.StretchableImage(0,0);
-			searchBar.Placeholder = "Search";
-
-
 		}
 
 		void HandleDidShowViewControllerEvent (LWSlideViewControllerState state)
@@ -118,11 +86,6 @@ namespace LWSlideViewController
 		#endregion
 
 		#region GESTURE HANDLERS
-		private void HandleTableViewTap(UITapGestureRecognizer rec)
-		{
-			searchBar.ResignFirstResponder();
-		}
-
 		private void HandleSlideInTap(UITapGestureRecognizer rec)
 		{
 			if (slideState == LWSlideViewControllerState.Peeking)
@@ -168,9 +131,6 @@ namespace LWSlideViewController
 		{
 			if ((slideMode & LWSlideViewControllerMode.AllViewController) == 0 && (slideState == LWSlideViewControllerState.DrilledDown))
 			    return;
-
-			if (slideState == LWSlideViewControllerState.Searching)
-				return;
 
 			startingDragPoint = location;
 
@@ -265,7 +225,6 @@ namespace LWSlideViewController
 			}, delegate {
 				slideNavigationController.TopViewController.View.UserInteractionEnabled = true;
 				slideInTapGestureRecognizer.Enabled = false;
-				//CancelSearching();
 				slideState = LWSlideViewControllerState.Normal;
 			});
 		}
@@ -282,7 +241,6 @@ namespace LWSlideViewController
 			               delegate{
 				slideNavigationController.View.Transform = CGAffineTransform.MakeTranslation(kLWRightAnchorX, 0f);
 			}, delegate {
-				searchBar.Frame = new RectangleF(0,0,kLWRightAnchorX, searchBar.Frame.Size.Height);
 				slideInTapGestureRecognizer.Enabled = true;
 			});
 		}
@@ -295,13 +253,11 @@ namespace LWSlideViewController
 			else
 				width = 320f;
 
-			slideState = LWSlideViewControllerState.Searching;
 			slideInTapGestureRecognizer.Enabled = false;
 
 			UIView.Animate(kLWSlideAnimationDuration, 0, UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.BeginFromCurrentState,
 			               delegate {
 				slideNavigationController.View.Transform = CGAffineTransform.MakeTranslation(width, 0);
-				searchBar.Frame = new RectangleF(0,0,width,searchBar.Frame.Size.Height);
 			}, delegate {});
 		}
 		#endregion
