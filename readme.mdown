@@ -10,8 +10,13 @@ Use
 =====
 
 Constructor takes in two values:
+
 `UIViewController initialViewController` - this will be the root view controller of the navigation controller.
 `UITableViewSource tableViewSource` - this is the UITableViewSource for the UITableView hidden by the sliding view. Done this way so it is simply plug and play.
+
+Only two files are required:
+* LWSlideViewController
+* LWSlideViewControllerDefines
 
 [![](http://i.imgur.com/FIZKJ.png)]
 
